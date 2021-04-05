@@ -1,7 +1,6 @@
-const express = require('express');
+const customExpress = require('./config/customExpress');
 
-const app = express();
+const app = customExpress();
 
 app.listen(3000, () => console.log('bla bla'));
 
-app.get('/atendimentos', (req, res) => res.send('Rota de atendimentossssdfbsdfbb'));
