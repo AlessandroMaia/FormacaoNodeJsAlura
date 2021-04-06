@@ -1,12 +1,14 @@
-const axios  = require('axios');
+const axios = require('axios');
 const moment = require('moment');
 
-const conexao = require('../infraestrutura/conexao');
+const conexao = require('../infraestrutura/database/conexao');
 
 class Atendimento {
     adiciona(atendimento, res) {
         const dataCriacao = moment().format('YYYY-MM-DD HH:MM:SS');
-        const data = moment(atendimento.data, 'DD/MM/YYYY').format('YYYY-MM-DD HH:MM:SS');
+        const data = moment(atendimento.data, 'DD/MM/YYYY').format(
+            'YYYY-MM-DD HH:MM:SS'
+        );
 
         const dataEhValida = moment(data).isSameOrAfter(dataCriacao);
         const clienteEhValido = atendimento.cliente.length >= 5;
@@ -36,9 +38,10 @@ class Atendimento {
 
             conexao.query(sql, atendimentoDatado, (erro, resultados) => {
                 if (erro) {
-                    res.status(400).json(erro);
+                    res.status(400).json(erro)
                 } else {
-                    res.status(201).json(atendimentoDatado);
+                    const id = resultados.insertId
+                    res.status(201).json({ ...atendimento, id })
                 }
             });
         }
@@ -64,7 +67,7 @@ class Atendimento {
             if (erro) {
                 res.status(400).json(erro);
             } else {
-                const {data} = await axios.get(`http://localhost:8082/${cpf}`);
+                const { data } = await axios.get(`http://localhost:8082/${cpf}`);
                 atendimento.cliente = data;
                 res.status(200).json(atendimento);
             }
@@ -82,19 +85,19 @@ class Atendimento {
             if (erro) {
                 res.status(400).json(erro);
             } else {
-                res.status(200).json({...valores, id});
+                res.status(200).json({ ...valores, id });
             }
         })
     }
 
-    deleta(id, res){
+    deleta(id, res) {
         const sql = 'DELETE FROM Atendimentos WHERE id=?';
 
         conexao.query(sql, id, (erro, resultados) => {
             if (erro) {
                 res.status(400).json(erro);
             } else {
-                res.status(200).json({id});
+                res.status(200).json({ id });
             }
         })
     }
