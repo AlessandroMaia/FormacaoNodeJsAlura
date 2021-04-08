@@ -20,9 +20,14 @@ module.exports = {
 
         return encontrado
     },
-    atualizar(id, dadosParaAtualizar){
+    atualizar(id, dadosParaAtualizar) {
         return Modelo.update(dadosParaAtualizar, {
-            where: {id: id}
+            where: { id: id }
+        })
+    },
+    remover(id) {
+        return Modelo.destroy({
+            where: { id: id }
         })
     }
 }
