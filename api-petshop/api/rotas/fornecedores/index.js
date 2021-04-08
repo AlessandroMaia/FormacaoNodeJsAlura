@@ -9,7 +9,7 @@ roteador.get('/', async (requisicao, resposta) => {
     )
 })
 
-roteador.post('/', async (requisicao, resposta) => {
+roteador.post('/', async (requisicao, resposta, proximo) => {
     try {
         const dadosRecebidos = requisicao.body
         const fornecedor = new Fornecedor(dadosRecebidos)
@@ -19,16 +19,11 @@ roteador.post('/', async (requisicao, resposta) => {
             JSON.stringify(fornecedor)
         )
     } catch (error) {
-        resposta.status(400)
-        resposta.send(
-            JSON.stringify({
-                messagem: error.message
-            })
-        )
-    } 
+       proximo(error)
+    }
 })
 
-roteador.get('/:idFornecedor', async (requisicao, resposta) => {
+roteador.get('/:idFornecedor', async (requisicao, resposta, proximo) => {
     try {
         const id = requisicao.params.idFornecedor
         const fornecedor = new Fornecedor({ id: id })
@@ -36,17 +31,12 @@ roteador.get('/:idFornecedor', async (requisicao, resposta) => {
         resposta.send(
             JSON.stringify(fornecedor)
         )
-    } catch (erro) {
-        resposta.status(404)
-        resposta.send(
-            JSON.stringify({
-                messagem: erro.message
-            })
-        )
+    } catch (error) {
+        proximo(error)
     }
 })
 
-roteador.put('/:idFornecedor', async (requisicao, resposta) => {
+roteador.put('/:idFornecedor', async (requisicao, resposta, proximo) => {
     try {
         const id = requisicao.params.idFornecedor
         const dadosRecebidos = requisicao.body
@@ -56,30 +46,20 @@ roteador.put('/:idFornecedor', async (requisicao, resposta) => {
         resposta.status(204)
         resposta.end()
     } catch (error) {
-        resposta.status(400)
-        resposta.send(
-            JSON.stringify({
-                messagem: error.message
-            })
-        )
+        proximo(error)
     }
 })
 
-roteador.delete('/:idFornecedor', async (requisicao, resposta) => {
+roteador.delete('/:idFornecedor', async (requisicao, resposta, proximo) => {
     try {
         const id = requisicao.params.idFornecedor
-        const fornecedor = new Fornecedor({id: id})
+        const fornecedor = new Fornecedor({ id: id })
         await fornecedor.carregar()
         fornecedor.remover()
         resposta.status(204)
         resposta.end()
     } catch (error) {
-        resposta.status(404)
-        resposta.send( 
-            JSON.stringify({
-                messagem: error.message
-            })
-        )
+        proximo(error)
     }
 })
 
