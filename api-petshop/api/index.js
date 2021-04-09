@@ -32,7 +32,6 @@ app.use((requisicao, resposta, proximo) => {
 
 
 app.use('/api/fornecedores', roteador)
-
 app.use((error, requisicao, resposta, proximo) => {
     let status = 500
 
