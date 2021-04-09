@@ -7,5 +7,17 @@ module.exports ={
                 fornecedor: idFornecedor
             }
         })
+    },
+    inserir (dados) {
+        return Modelo.create(dadso)
+    },
+    remover (idProduto, idFornecedor) {
+        return Modelo.destroy({
+            where: {
+                id: idProduto, 
+                fornecedor: idFornecedor
+            }
+        })
     }
+
 }
