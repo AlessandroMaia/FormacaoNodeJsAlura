@@ -1,32 +1,32 @@
 const database = require("../models");
 
-class PessoaController {
+class NivelController {
   static async getAll(req, res) {
     try {
-      const todasAsPessoas = await database.Pessoas.findAll();
-      return res.status(200).json(todasAsPessoas);
+      const todosOsNiveis = await database.Niveis.findAll();
+      return res.status(200).json(todosOsNiveis);
     } catch (error) {
-      return res.status(500).json(error.message);
+      return res.status(500).json(error.mensage);
     }
   }
 
   static async getById(req, res) {
     const { id } = req.params;
     try {
-      const umaPessoa = await database.Pessoas.findOne({
+      const nivel = await database.Niveis.findOne({
         where: { id: Number(id) },
       });
-      return res.status(200).json(umaPessoa);
+      return res.status(200).json(nivel);
     } catch (error) {
-      return res.status(500).json(error.message);
+      return res.status(500).json(error.mensage);
     }
   }
 
   static async create(req, res) {
-    const pessoa = req.body;
+    const nivel = req.body;
     try {
-      const novaPessoa = await database.Pessoas.create(pessoa);
-      return res.status(200).json(novaPessoa);
+      const novoNivel = await database.Niveis.create(nivel);
+      return res.status(200).json(novoNivel);
     } catch (error) {
       return res.status(500).json(error.message);
     }
@@ -34,13 +34,13 @@ class PessoaController {
 
   static async update(req, res) {
     const { id } = req.params;
-    const pessoa = req.body;
+    const nivel = req.body;
     try {
-      await database.Pessoas.update(pessoa, { where: { id: Number(id) } });
-      const pessoaAtualizada = await database.Pessoas.findOne({
+      await database.Niveis.update(nivel, { where: { id: Number(id) } });
+      const nivelAtualizado = await database.Niveis.findOne({
         where: { id: Number(id) }
       });
-      return res.status(200).json(pessoaAtualizada);
+      return res.status(200).json(nivelAtualizado);
     } catch (error) {
       return res.status(500).json(error.message);
     }
@@ -49,7 +49,7 @@ class PessoaController {
   static async delete(req, res) {
     const { id } = req.params;
     try {
-      await database.Pessoas.destroy({ where: { id: Number(id) } });
+      await database.Niveis.destroy({ where: { id: Number(id) } });
       return res.status(200).json({
         messagem: `id ${id} deletado!`,
       });
@@ -59,4 +59,4 @@ class PessoaController {
   }
 }
 
-module.exports = PessoaController;
+module.exports = NivelController;
