@@ -1,9 +1,18 @@
 const database = require("../models");
 
 class PessoaController {
-  static async getAll(req, res) {
+  static async getAllAticves(req, res) {
     try {
       const todasAsPessoas = await database.Pessoas.findAll();
+      return res.status(200).json(todasAsPessoas);
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
+
+  static async getAll(req, res) {
+    try {
+      const todasAsPessoas = await database.Pessoas.scope('all').findAll();
       return res.status(200).json(todasAsPessoas);
     } catch (error) {
       return res.status(500).json(error.message);
@@ -36,7 +45,7 @@ class PessoaController {
     const { id } = req.params;
     const pessoa = req.body;
     try {
-      await database.Pessoas.update(pessoa, { where: { id: Number(id) } });
+      await database.Pessoas.scope('all').update(pessoa, { where: { id: Number(id) } });
       const pessoaAtualizada = await database.Pessoas.findOne({
         where: { id: Number(id) },
       });

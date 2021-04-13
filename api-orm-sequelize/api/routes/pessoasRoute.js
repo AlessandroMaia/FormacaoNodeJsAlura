@@ -3,7 +3,8 @@ const PessoaController = require("../controllers/PessoaController");
 
 const router = Router();
 
-router.get('/pessoas', PessoaController.getAll)
+router.get('/pessoas', PessoaController.getAllAticves)
+router.get('/pessoas/todos', PessoaController.getAll)
 router.get('/pessoas/:id', PessoaController.getById)
 router.post('/pessoas', PessoaController.create)
 router.put('/pessoas/:id', PessoaController.update)
