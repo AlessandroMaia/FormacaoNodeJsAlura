@@ -8,11 +8,13 @@ router.get('/pessoas/:id', PessoaController.getById)
 router.post('/pessoas', PessoaController.create)
 router.put('/pessoas/:id', PessoaController.update)
 router.delete('/pessoas/:id', PessoaController.delete)
+router.post('/pessoas/:id/restaura', PessoaController.restore)
 
 router.get('/pessoas/:idPessoa/matricula/:idMatricula', PessoaController.getMatriculaById)
 router.get('/pessoas/:estudanteId/matricula', PessoaController.getAllMatriculaByIdPessoa)
 router.post('/pessoas/:pessoaId/matricula', PessoaController.createMatricula)
 router.put('/pessoas/:idPessoa/matricula/:idMatricula', PessoaController.updateMatricula)
 router.delete('/pessoas/:idPessoa/matricula/:idMatricula', PessoaController.deleteMatricula)
+router.post('/pessoas/:idPessoa/matricula/:idMatricula/restaura', PessoaController.restoreMatricula)
 
 module.exports = router

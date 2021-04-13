@@ -58,6 +58,18 @@ class PessoaController {
     }
   }
 
+  static async restore(req, res) {
+    const { id } = req.params;
+    try {
+      await database.Pessoas.restore({ where: { id: Number(id) } });
+      return res.status(200).json({
+        messagem: `id ${id} restaurado!`,
+      });
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
+
   static async getMatriculaById(req, res) {
     const { idPessoa } = req.params;
     const { idMatricula } = req.params;
@@ -101,7 +113,9 @@ class PessoaController {
     const { idMatricula } = req.params;
     const pessoa = req.body;
     try {
-      await database.Matriculas.update(pessoa, { where: { id: Number(idMatricula), estudante_id: Number(idPessoa) } });
+      await database.Matriculas.update(pessoa, {
+        where: { id: Number(idMatricula), estudante_id: Number(idPessoa) },
+      });
       const matriculaAtualizada = await database.Matriculas.findOne({
         where: { id: Number(idMatricula), estudante_id: Number(idPessoa) },
       });
@@ -115,9 +129,24 @@ class PessoaController {
     const { idPessoa } = req.params;
     const { idMatricula } = req.params;
     try {
-      await database.Matriculas.destroy({ where: { id: Number(idMatricula), estudante_id: Number(idPessoa) } });
+      await database.Matriculas.destroy({
+        where: { id: Number(idMatricula), estudante_id: Number(idPessoa) }
+      });
       return res.status(200).json({
         messagem: `id ${idMatricula} deletado!`,
+      });
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
+
+  static async restoreMatricula(req, res) {
+    const { idPessoa } = req.params;
+    const { idMatricula } = req.params;
+    try {
+      await database.Matriculas.restore({ id: Number(idMatricula), estudante_id: Number(idPessoa) });
+      return res.status(200).json({
+        messagem: `id ${idMatricula} restaurado!`,
       });
     } catch (error) {
       return res.status(500).json(error.message);
