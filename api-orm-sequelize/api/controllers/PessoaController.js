@@ -1,10 +1,13 @@
 const Sequelize = require("sequelize");
 const database = require("../models");
 
+const { PessoasServices } = require('../services');
+const pessoasServices = new PessoasServices();
+
 class PessoaController {
   static async getAllAticves(req, res) {
     try {
-      const todasAsPessoas = await database.Pessoas.findAll();
+      const todasAsPessoas = await pessoasServices.getAllActivesService();
       return res.status(200).json(todasAsPessoas);
     } catch (error) {
       return res.status(500).json(error.message);
@@ -13,7 +16,7 @@ class PessoaController {
 
   static async getAll(req, res) {
     try {
-      const todasAsPessoas = await database.Pessoas.scope("all").findAll();
+      const todasAsPessoas = await pessoasServices.getAllService();
       return res.status(200).json(todasAsPessoas);
     } catch (error) {
       return res.status(500).json(error.message);
@@ -23,9 +26,7 @@ class PessoaController {
   static async getById(req, res) {
     const { id } = req.params;
     try {
-      const umaPessoa = await database.Pessoas.findOne({
-        where: { id: Number(id) },
-      });
+      const umaPessoa = await pessoasServices.getByIdService(id);
       return res.status(200).json(umaPessoa);
     } catch (error) {
       return res.status(500).json(error.message);
@@ -70,21 +71,10 @@ class PessoaController {
     }
   }
 
-  static async deactivatePessoa(req, res) {
+  static async desactivatePessoa(req, res) {
     const { estudanteId } = req.params;
     try {
-      database.sequelize.transaction(async (t) => {
-        await database.Pessoas.update(
-          { ativo: false },
-          { where: { id: Number(estudanteId) } },
-          { transaction: t}
-        );
-        await database.Matriculas.update(
-          { status: "cancelado" },
-          { where: { estudante_id: Number(estudanteId) } },
-          { transaction: t}
-        );
-      });
+      await pessoasServices.desactivatePessoaAndMatriculasService(Number(estudanteId))
       return res
         .status(200)
         .json({ message: `matrículas ref. ${estudanteId} canceladas` });
