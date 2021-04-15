@@ -30,6 +30,10 @@ class UsuarioController {
             return res.status(500).send(error.message)
         }
     }
+
+    static async login (req, res) {
+        res.status(204).send()
+    }
 }
 
 module.exports = UsuarioController
