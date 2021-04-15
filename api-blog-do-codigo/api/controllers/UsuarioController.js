@@ -1,5 +1,14 @@
 const Services = require('../services/UsuariosServices')
 const UsuariosServices = new Services()
+const jwt = require('jsonwebtoken')
+
+function criaTokenJWT (usuario) {
+    const payload = {
+        id: usuario.id
+    }
+    const token = jwt.sign(payload, process.env.CHAVE_JWT)
+    return token;
+}
 
 class UsuarioController {
     static async getAll (req, res) {
@@ -32,8 +41,11 @@ class UsuarioController {
     }
 
     static async login (req, res) {
+        const token = criaTokenJWT(req.user)
+        res.set('Authorization', token)
         res.status(204).send()
     }
 }
+
 
 module.exports = UsuarioController

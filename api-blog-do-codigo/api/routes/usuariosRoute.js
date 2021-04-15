@@ -1,15 +1,15 @@
 const { Router } = require('express')
+const middlewareAuth = require('../services/middlewares-auth')
 const UsuarioController = require('../controllers/UsuarioController')
-const passport = require('passport')
 
 const router = Router()
 
 router.get('/usuarios', UsuarioController.getAll)
       .post('/usuarios', UsuarioController.create)
-      .delete('/usuarios/:id', UsuarioController.delete)
+      .delete('/usuarios/:id', middlewareAuth.bearer, UsuarioController.delete)
 
 router.post('/usuarios/login', 
-            passport.authenticate('local', { session: false }), 
+            middlewareAuth.local, 
             UsuarioController.login)
 
 module.exports = router
