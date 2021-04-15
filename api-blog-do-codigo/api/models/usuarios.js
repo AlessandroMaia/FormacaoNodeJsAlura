@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    senha: {
+    senhaHash: {
       type:DataTypes.STRING,
       allowNull: false,
       validate: {
