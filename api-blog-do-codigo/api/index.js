@@ -4,6 +4,7 @@ const express = require('express')
 const routes = require('./routes')
 const app = express()
 const { AuthService } = require('../api/services')
+require('../redis/blacklist')
 
 const port = 3000
 

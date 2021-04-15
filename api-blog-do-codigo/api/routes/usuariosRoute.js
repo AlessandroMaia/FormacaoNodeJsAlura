@@ -12,4 +12,8 @@ router.post('/usuarios/login',
             middlewareAuth.local, 
             UsuarioController.login)
 
+router.get('/usuarios/logout', 
+            middlewareAuth.bearer, 
+            UsuarioController.logout)
+
 module.exports = router

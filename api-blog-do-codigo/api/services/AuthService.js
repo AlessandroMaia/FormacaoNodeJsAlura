@@ -8,9 +8,18 @@ const Usuario = new UsuariosServices()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+const blacklist = require('../../redis/manipula-blacklist')
+
 function verificaUsuario (usuario) {
     if (!usuario) {
         throw new Error('Usuário não encontrado')
+    }
+}
+
+async function verificaTokenNaBlackList (token) {
+    const tokenNaBlacklist = await blacklist.getToken(token)
+    if (tokenNaBlacklist) {
+        throw new jwt.JsonWebTokenError('Token inválido por logout')
     }
 }
 
@@ -29,7 +38,7 @@ passaport.use(
     }, async (email, senha, done) => {
         try {
             const usuario = await Usuario.getByEmail(email)
-            verificaUsuario(usuario)
+            verificaUsuario(usuario.email)
             await verificaSenha(senha, usuario.senhaHash)
 
             done(null, usuario)
@@ -43,9 +52,10 @@ passaport.use(
     new BearerStrategy(
         async (token, done) => {
             try {
+                await verificaTokenNaBlackList(token)
                 const payload = jwt.verify(token, process.env.CHAVE_JWT)
                 const usuario = await Usuario.getByIdService(payload.id)
-                done(null, usuario)
+                done(null, usuario, { token: token })
             } catch (error) {
                 done(error)
             }
