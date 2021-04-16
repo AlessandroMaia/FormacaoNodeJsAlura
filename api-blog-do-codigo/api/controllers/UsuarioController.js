@@ -2,6 +2,8 @@ const Services = require('../services/UsuariosServices')
 const UsuariosServices = new Services()
 const jwt = require('jsonwebtoken')
 const blacklist = require('../../redis/manipula-blacklist')
+const crypto = require('crypto')
+const moment = require('moment')
 
 function criaTokenJWT (usuario) {
     const payload = {
@@ -9,6 +11,12 @@ function criaTokenJWT (usuario) {
     }
     const token = jwt.sign(payload, process.env.CHAVE_JWT, { expiresIn: '15m' })
     return token;
+}
+
+function criaTokenOpaco (usuario) {
+    const tokenOpaco = crypto.randomBytes(24).toString('hex')
+    const 
+    return tokenOpaco
 }
 
 class UsuarioController {
@@ -42,9 +50,14 @@ class UsuarioController {
     }
 
     static async login (req, res) {
-        const token = criaTokenJWT(req.user)
-        res.set('Authorization', token)
-        res.status(204).send()
+        try {
+            const acessToken = criaTokenJWT(req.user)
+            const refreshToken = criaTokenOpaco(req.user)
+            res.set('Authorization', acessToken)
+            res.status(200).json({ refreshToken })
+        } catch (error) {
+            res.status(400).json({ error: error.message})
+        }
     }
 
     static async logout (req, res) {
