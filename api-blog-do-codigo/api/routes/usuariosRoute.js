@@ -12,8 +12,13 @@ router.post('/usuarios/login',
             middlewareAuth.local, 
             UsuarioController.login)
 
-router.get('/usuarios/logout', 
-            middlewareAuth.bearer, 
+router.post('/usuarios/logout', 
+            [middlewareAuth.refresh,
+            middlewareAuth.bearer], 
             UsuarioController.logout)
+
+router.post('/usuarios/atualiza_token', 
+            middlewareAuth.refresh,
+            UsuarioController.login)
 
 module.exports = router

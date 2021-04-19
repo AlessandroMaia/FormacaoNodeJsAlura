@@ -1,7 +1,26 @@
 const passport = require('passport');
+const Services = require('../services/UsuariosServices')
+const Usuario = new Services()
+const allowlist = require('../../redis/allowlist-refresh-token')
+
+async function verificaRefreshToken(refreshToken) {
+    if (!refreshToken) {
+        throw new Error('Refresh não enviado')
+    }
+
+    const id = await allowlist.buscaValor(refreshToken)
+    if(!id) {
+        throw new Error('Refresh token inválido')
+    }
+    return id
+}
+
+async function invalidaRefreshToken(refreshToken) {
+    await allowlist.deleta(refreshToken)
+}
 
 module.exports = {
-    local: (req, res, next) => {
+    local (req, res, next) {
         passport.authenticate(
             "local",
             { session: false },
@@ -21,7 +40,7 @@ module.exports = {
             }
         )(req, res, next)
     },
-    bearer: (req, res, next) => {
+    bearer (req, res, next) {
         passport.authenticate(
             'bearer',
             { session: false },
@@ -52,5 +71,18 @@ module.exports = {
                 return next()
             }
         )(req, res, next)
+    },
+    async refresh (req, res, next) {
+        try {
+            const { refreshToken } = req.body
+            const id = await verificaRefreshToken(refreshToken)
+            console.log(id)
+            await invalidaRefreshToken(refreshToken)
+            req.user = await Usuario.getByIdService(id)
+            console.log(req.user)
+            return next()
+        } catch (error) {
+            return res.status(500).json({ error: error.message })
+        }
     }
 }

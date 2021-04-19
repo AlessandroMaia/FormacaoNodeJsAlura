@@ -8,7 +8,7 @@ const Usuario = new UsuariosServices()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const blacklist = require('../../redis/manipula-blacklist')
+const blacklist = require('../../redis/blacklist-access-token')
 
 function verificaUsuario (usuario) {
     if (!usuario) {
