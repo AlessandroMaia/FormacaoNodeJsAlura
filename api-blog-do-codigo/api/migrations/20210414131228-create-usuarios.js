@@ -17,6 +17,11 @@ module.exports = {
       senhaHash: {
         type: Sequelize.STRING
       },
+      emailVerificado: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: false
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

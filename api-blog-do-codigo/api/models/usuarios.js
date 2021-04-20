@@ -38,8 +38,13 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'Por favor insira a senha'
         }
       }
+    },
+    emailVerificado: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: false
     }
-  }, {
+  },{
     sequelize,
     modelName: 'usuarios',
   });

@@ -21,4 +21,8 @@ router.post('/usuarios/atualiza_token',
             middlewareAuth.refresh,
             UsuarioController.login)
 
+router.get('/usuario/verifica_email/:token',
+            middlewareAuth.verificacaoEmail,
+            UsuarioController.verificaEmail)
+
 module.exports = router
