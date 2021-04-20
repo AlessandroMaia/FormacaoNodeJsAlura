@@ -4,22 +4,12 @@ const BearerStrategy = require('passport-http-bearer').Strategy
 
 const UsuariosServices = require('../services/UsuariosServices')
 const Usuario = new UsuariosServices()
-
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-
-const blacklist = require('../../redis/blacklist-access-token')
+const tokens = require('../services/tokens')
 
 function verificaUsuario (usuario) {
     if (!usuario) {
         throw new Error('Usuário não encontrado')
-    }
-}
-
-async function verificaTokenNaBlackList (token) {
-    const tokenNaBlacklist = await blacklist.getToken(token)
-    if (tokenNaBlacklist) {
-        throw new jwt.JsonWebTokenError('Token inválido por logout')
     }
 }
 
@@ -52,9 +42,8 @@ passaport.use(
     new BearerStrategy(
         async (token, done) => {
             try {
-                await verificaTokenNaBlackList(token)
-                const payload = jwt.verify(token, process.env.CHAVE_JWT)
-                const usuario = await Usuario.getByIdService(payload.id)
+                const id = await tokens.access.verifica(token)
+                const usuario = await Usuario.getByIdService(id)
                 done(null, usuario, { token: token })
             } catch (error) {
                 done(error)
