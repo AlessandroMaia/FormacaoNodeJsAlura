@@ -1,6 +1,12 @@
 const Services = require('../services/UsuariosServices')
 const UsuariosServices = new Services()
 const tokens = require('../services/tokens')
+const { EmailVerificacao } = require('../services/emails')
+
+function geraEndereco (rota, id) {
+    const baseURL = process.env.BASE_URL
+    return `${baseURL}${rota}${id}`
+}
 class UsuarioController {
     static async getAll (req, res) {
         try {
@@ -15,6 +21,11 @@ class UsuarioController {
         try {
             const body = req.body
             const usuario = await UsuariosServices.createService(body)
+            
+            const endereco = geraEndereco('/usuario/verifica_email/', usuario.id)
+            const emailVerificacao = new EmailVerificacao(usuario, endereco)
+            emailVerificacao.enviaEmail().catch(console.log)
+
             return res.status(201).send(usuario)
         } catch (error) {
             return res.status(500).send(error.message)
