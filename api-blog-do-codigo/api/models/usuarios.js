@@ -43,6 +43,19 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: false
+    },
+    cargo: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isIn: {
+          args: [['admin', 'editor', 'assinante']],
+          msg: 'Cargo inválido'
+        },
+        notNull: {
+          msg: 'Favor insira o cargo'
+        }
+      }
     }
   },{
     sequelize,

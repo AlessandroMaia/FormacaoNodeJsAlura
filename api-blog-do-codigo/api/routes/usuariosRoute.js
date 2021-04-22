@@ -1,12 +1,13 @@
 const { Router } = require('express')
 const middlewareAuth = require('../services/middlewares-auth')
 const UsuarioController = require('../controllers/UsuarioController')
+const middlewareAutho = require('../services/middlewares-authorization')
 
 const router = Router()
 
 router.get('/usuarios', UsuarioController.getAll)
       .post('/usuarios', UsuarioController.create)
-      .delete('/usuarios/:id', middlewareAuth.bearer, UsuarioController.delete)
+      .delete('/usuarios/:id', [middlewareAuth.bearer, middlewareAutho(['admin'])], UsuarioController.delete)
 
 router.post('/usuarios/login', 
             middlewareAuth.local, 

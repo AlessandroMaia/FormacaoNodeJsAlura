@@ -1,4 +1,7 @@
 'use strict';
+
+const { DataTypes } = require("sequelize/types");
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('usuarios', {
@@ -21,6 +24,10 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: false
+      },
+      cargo: {
+        type: DataTypes.STRING,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
